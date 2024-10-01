@@ -1,0 +1,41 @@
+/* NavItem.module.css */
+
+.navLink {
+  padding-left: 0.75rem; /* Equivalent to Tailwind class: px-3 */
+  padding-right: 0.75rem; /* Equivalent to Tailwind class: px-3 */
+  padding-top: 0.5rem; /* Equivalent to Tailwind class: py-2 */
+  padding-bottom: 0.5rem; /* Equivalent to Tailwind class: py-2 */
+  font-size: 1.125rem; /* Equivalent to Tailwind class: text-lg */
+  font-weight: bold; /* Equivalent to Tailwind class: font-bold */
+  color: inherit; /* Equivalent to Tailwind class: text-primary (if primary color) */
+  text-decoration: none; /* Remove underline */
+  transition: color 0.3s ease; /* Transition for hover effect */
+}
+
+.navLink:hover {
+  color: #00ced1; /* Hover color: Equivalent to Tailwind class: hover:text-secondary */
+}
+
+/* OutlineButton.module.css */
+.OutlineButton {
+  background: transparent;
+  border: 2px solid #00ced1;
+  color: #00ced1;
+  font-size: 1.15rem;
+  font-weight: 700;
+  width: 100%;
+  border-radius: 4px;
+  padding: 13px 0;
+  cursor: pointer;
+  margin-top: 0.625rem;
+  max-width: 120px;
+  min-width: 120px;
+  transition: all 0.3s ease-in-out;
+}
+
+.OutlineButton:hover,
+.OutlineButton:active,
+.OutlineButton:focus {
+  color: #fff;
+  background-color: #00ced1;
+}
