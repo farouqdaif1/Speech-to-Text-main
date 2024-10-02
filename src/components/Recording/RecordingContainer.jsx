@@ -28,6 +28,7 @@ function RecordingContainer({ userEmail, accessToken }) {
   const socketRef = useRef(null);
   const [isPermissionModalOpen, setPermissionModalOpen] = useState(false);
   const [list, setList] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   let mediaStream;
   useEffect(() => {
@@ -79,6 +80,7 @@ function RecordingContainer({ userEmail, accessToken }) {
       // Request microphone access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       setAudio(stream);
+      setIsPlaying(true);
 
       // Set the recording start date
       let recordingFormattedDate =
@@ -191,6 +193,8 @@ function RecordingContainer({ userEmail, accessToken }) {
       setRecording(false);
       setIsPaused(false);
       setDisplayAudio(true);
+      setIsPlaying(false);
+
       waveform && waveform.setMute(false);
       setAudio(null); // Reset audio streams
       setStopped(true);
@@ -219,6 +223,7 @@ function RecordingContainer({ userEmail, accessToken }) {
 
   const handlePauseRecording = () => {
     setIsPaused(true);
+    setIsPlaying(false);
 
     // Stop the media recording
     if (mediaRecorderRef.current) {
@@ -265,6 +270,7 @@ function RecordingContainer({ userEmail, accessToken }) {
   const handlePlayRecording = () => {
     setIsPaused(false);
     // Your logic to play recording
+    setIsPlaying(true);
     handleStartRecording();
   };
 
@@ -448,7 +454,7 @@ function RecordingContainer({ userEmail, accessToken }) {
               )}
             </>
           ) : (
-            <div className="space-y-4 space-x-2 w-[80%]">
+            <div className="space-y-4 space-x-2 w-[100%] flex items-center justify-center ">
               {isLoading ? (
                 <>
                   <div className="container mx-auto text-center">
@@ -484,7 +490,7 @@ function RecordingContainer({ userEmail, accessToken }) {
                   </div>
                 </>
               ) : (
-                <div className="space-x-2">
+                <div className="space-x-2 w-[80%]">
                   {list &&
                     list.map((item, index) => {
                       return (
@@ -509,10 +515,11 @@ function RecordingContainer({ userEmail, accessToken }) {
             </div>
           )}
         </div>
-
-        <div className="w-full h-[20vh]">
-          <p>{fullTranscript} </p>
-        </div>
+        {isPlaying && (
+          <div className="w-full h-[20vh]">
+            <p>{fullTranscript} </p>
+          </div>
+        )}
       </div>
     </div>
   );
