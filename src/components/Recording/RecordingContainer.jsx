@@ -74,6 +74,14 @@ function RecordingContainer({ userEmail, accessToken }) {
       handleSendRecording();
     }
   }, [stoped]);
+  const textareaRef = useRef(null);
+
+  // Scroll to the bottom whenever new text is added
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.scrollTop = textareaRef.current.scrollHeight;
+    }
+  }, [fullTranscript]);
 
   const handleStartRecording = async () => {
     try {
@@ -498,10 +506,10 @@ function RecordingContainer({ userEmail, accessToken }) {
                           key={index}
                           className="relative inline-block space-x-2 group"
                         >
-                          <span className="text-blue-600 font-medium cursor-pointer group">
+                          <span className="text-blue-600 font-medium cursor-pointer group z-3">
                             {item.word}
                           </span>
-                          <div className="absolute left-0 mt-1 bg-white p-2  min-w-[300px] hidden border border-gray-200 rounded shadow-lg group-hover:block">
+                          <div className="absolute left-0 mt-1 bg-white p-2  min-w-[300px] hidden border border-gray-200 z-10 rounded shadow-lg group-hover:block">
                             <p>
                               {item?.definitions?.[0]?.definition ||
                                 "No definition available"}
@@ -516,8 +524,22 @@ function RecordingContainer({ userEmail, accessToken }) {
           )}
         </div>
         {isPlaying && (
-          <div className="w-full h-[20vh]">
-            <p>{fullTranscript} </p>
+          <div className="w-full h-[20vh] p-4  flex align-center justify-center">
+            {fullTranscript && (
+              <textarea
+                ref={textareaRef}
+                readOnly
+                className="bg-black/70 text-white text-center  text-lg px-4 py-2 rounded-md  w-[60%] mx-auto fixed bottom-10  overflow-y-auto"
+                value={fullTranscript}
+                style={{
+                  lineHeight: "1.5em",
+                  maxHeight: "4.5em",
+                  overflowY: "scroll",
+                  scrollbarWidth: "none", // For Firefox
+                  msOverflowStyle: "none", // For IE and Edge
+                }}
+              />
+            )}
           </div>
         )}
       </div>
