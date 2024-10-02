@@ -27,6 +27,7 @@ function RecordingContainer({ userEmail, accessToken }) {
   const [isPaused, setIsPaused] = useState(false);
   const socketRef = useRef(null);
   const [isPermissionModalOpen, setPermissionModalOpen] = useState(false);
+  const [list, setList] = useState(null);
 
   let mediaStream;
   useEffect(() => {
@@ -264,7 +265,6 @@ function RecordingContainer({ userEmail, accessToken }) {
   const handlePlayRecording = () => {
     setIsPaused(false);
     // Your logic to play recording
-
     handleStartRecording();
   };
 
@@ -301,6 +301,8 @@ function RecordingContainer({ userEmail, accessToken }) {
     if (audioUrl || fullTranscript || stoped) {
       try {
         setShowRetry(false);
+        setLoading(true);
+
         const formData = new FormData();
 
         formData.append("account_id", userEmail || "NO_ACCOUNT_ID");
@@ -310,17 +312,14 @@ function RecordingContainer({ userEmail, accessToken }) {
 
         // console.log(recordingStartDate);
         console.log("form data appended");
-        setLoading(true);
         console.log(formData.toString());
-        //sudo function to send data to api
-        const respond = await fetch("https://api.deepgram.com/v1/listen", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: formData,
-        });
-        console.log(respond);
+        console.log("Send Data", fullTranscript);
+        const res = await fetch(
+          `https://sina.azurewebsites.net/api/define_words?code=Oc_puMvVIB5xvHRQRLWkiumHnkZe5_otVjYJEJu9lcpOAzFuIqg9iA%3D%3D&query=${fullTranscript}`
+        );
+        const data = await res.json();
+        setList(data);
+        console.log("data", data);
       } catch (err) {
         console.error("Failed to send the recording: ", err);
         setShowRetry(true);
@@ -449,7 +448,7 @@ function RecordingContainer({ userEmail, accessToken }) {
               )}
             </>
           ) : (
-            <>
+            <div className="space-y-4 space-x-2 w-[80%]">
               {isLoading ? (
                 <>
                   <div className="container mx-auto text-center">
@@ -485,11 +484,32 @@ function RecordingContainer({ userEmail, accessToken }) {
                   </div>
                 </>
               ) : (
-                <></>
+                <div className="space-x-2">
+                  {list &&
+                    list.map((item, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="relative inline-block space-x-2 group"
+                        >
+                          <span className="text-blue-600 font-medium cursor-pointer group">
+                            {item.word}
+                          </span>
+                          <div className="absolute left-0 mt-1 bg-white p-2  min-w-[300px] hidden border border-gray-200 rounded shadow-lg group-hover:block">
+                            <p>
+                              {item?.definitions?.[0]?.definition ||
+                                "No definition available"}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                </div>
               )}
-            </>
+            </div>
           )}
         </div>
+
         <div className="w-full h-[20vh]">
           <p>{fullTranscript} </p>
         </div>
